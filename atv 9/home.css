@@ -1,0 +1,114 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #E7E7E7;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+        'menu header header'
+        'menu conteudo conteudo'
+        'menu footer footer';
+    grid-template-columns: 300px 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
+.menu {
+    grid-area: menu;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0px;
+}
+
+.menu a{
+    background-color: #04C9F4;
+    color: white;
+    text-decoration: none;
+    margin: 0;
+    border: none;
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 0;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+.menu a.menu-title  {
+    background-color: #D9D9D9;
+}
+
+.menu a:hover {
+    background-color: #029ec0;
+}
+
+.conteudo {
+    grid-area: conteudo;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    grid-area: header;
+    background-color: #04C9F4;
+    padding: 10px;
+    text-align: left;
+    color: white;
+    font-weight: bold;
+}
+
+.footer {
+    grid-area: footer;
+    background-color: white;
+    text-align: center;
+    padding: 10px;
+    color: #04C9F4;
+}
+
+.logo {
+    width: 400px;
+    height: 400px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+@media screen and (max-width: 600px) {
+    .grid-container {
+        grid-template-areas:
+            'header'
+            'menu'
+            'conteudo'
+            'footer';
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+    }
+
+    .menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .menu a {
+        width: 45%;
+        margin: 5px;
+    }
+
+    .separador {
+        padding: 20px;
+        font-size: 14px;
+    }
+}

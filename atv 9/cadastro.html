@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Móveis</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div class="top-bar">Cadastro de Móvel</div>
+  <div class="menu">
+            <a href="home.html">HOME</a>
+            <a href="cadastro.html">CADASTRO DE MÓVEIS</a>
+            <a href="funcionarios.html">CADASTRO DE FUNCIONÁRIOS</a>
+            <a href="usuario.html">USUÁRIO</a>
+        </div>
+
+  <div class="form-container">
+    <input type="text" id="nome" placeholder="Nome do Produto">
+    <input type="text" id="tipo" placeholder="Tipo (Mesa, Cadeira...)">
+    <input type="text" id="descricao" placeholder="Descrição">
+    <input type="number" id="preco" placeholder="Preço">
+
+    <div class="btn-group">
+      <button class="btn incluir" onclick="incluir()">INCLUIR</button>
+      <button class="btn editar" onclick="editar()">EDITAR</button>
+      <button class="btn salvar" onclick="salvar()">SALVAR</button>
+      <button class="btn cancelar" onclick="cancelar()">CANCELAR</button>
+      <button class="btn excluir" onclick="excluir()">EXCLUIR</button>
+    </div>
+
+    <div class="navegacao">
+      <button onclick="primeiro()">|&lt;</button>
+      <button onclick="anterior()">&lt;</button>
+      <button onclick="proximo()">&gt;</button>
+      <button onclick="ultimo()">&gt;|</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
