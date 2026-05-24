@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniLife — Faturamento</title>
+  <link rel="stylesheet" href="./global.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="overlay-lateral" id="overlayLateral" onclick="fecharSidebar()"></div>
+<aside class="barra-lateral" id="barraLateral">
+</aside>
+<header class="barra-topo">
+  <div class="topo-acoes">
+  </div>
+</header>
+<main class="conteudo">
+  <nav class="abas-nav">
+    <button class="aba-item ativa" onclick="trocarAba('faturamento', this)">
+      <i class="bi bi-receipt"></i> Faturamento
+    </button>
+
+  </nav>
+  <section id="aba-faturamento" class="secao-aba">
+    <div class="cabecalho-secao">
+      <div>
+        <h2 class="subtitulo-secao">Faturamento</h2>
+        <p class="descricao-secao">Gerencie suas faturas e recebimentos.</p>
+      </div>
+      <button class="btn-primario" onclick="abrirModal()">
+        <i class="bi bi-plus-lg"></i> Nova Fatura
+      </button>
+    </div>
+    <div class="barra-filtros">
+      <div class="campo-busca">
+        <i class="bi bi-search"></i>
+        <input type="text" id="campoBusca" placeholder="Buscar paciente ou procedimento" oninput="renderizarTabela()" />
+      </div>
+      <div class="campo-data">
+        <input type="date" id="dataInicio" onchange="renderizarTabela()" title="Data inicial" />
+      </div>
+      <div class="campo-data">
+        <input type="date" id="dataFim" onchange="renderizarTabela()" title="Data final" />
+      </div>
+      <select id="filtroStatus" class="select-filtro" onchange="renderizarTabela()">
+        <option value="">Status</option>
+        <option value="Pendente">Pendente</option>
+        <option value="Pago">Pago</option>
+        <option value="Cancelado">Cancelado</option>
+      </select>
+      <select id="filtroFormaPagamento" class="select-filtro" onchange="renderizarTabela()">
+        <option value="">Formas de Pagamento</option>
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="Cartão Débito">Cartão - Débito</option>
+        <option value="Cartão Crédito">Cartão - Crédito</option>
+        <option value="PIX">PIX</option>
+        <option value="Convênios">Convênios</option>
+      </select>
+      <select id="filtroConvenio" class="select-filtro" onchange="renderizarTabela()">
+        <option value="">Convênios</option>
+      </select>
+
+    </div>
+    <div class="linha-indicadores">
+      <div class="cartao-indicador pendente">
+        <div class="rotulo-indicador"><i class="bi bi-clock"></i> Pendentes</div>
+        <div class="valor-indicador" id="indicadorPendente">R$ 0,00</div>
+        <div class="contagem-indicador" id="contagemPendente">0 faturas</div>
+      </div>
+      <div class="cartao-indicador pago">
+        <div class="rotulo-indicador"><i class="bi bi-check-circle"></i> Recebidos</div>
+        <div class="valor-indicador" id="indicadorPago">R$ 0,00</div>
+        <div class="contagem-indicador" id="contagemPago">0 faturas</div>
+      </div>
+      <div class="cartao-indicador cancelado">
+        <div class="rotulo-indicador"><i class="bi bi-x-circle"></i> Cancelados</div>
+        <div class="valor-indicador" id="indicadorCancelado">R$ 0,00</div>
+        <div class="contagem-indicador" id="contagemCancelado">0 faturas</div>
+      </div>
+      <div class="cartao-indicador mes">
+        <div class="rotulo-indicador"><i class="bi bi-calendar-month"></i> Total do Mês</div>
+        <div class="valor-indicador" id="indicadorMes">R$ 0,00</div>
+        <div class="contagem-indicador" id="contagemMes">0 faturas</div>
+      </div>
+    </div>
+    <div class="envoltorio-tabela">
+      <div class="tabela-cabecalho">
+        <span class="tabela-total" id="tabelaTotal">0 faturas</span>
+      </div>
+      <table>
+        <thead>
+          <tr class = "tabela-conve" id="tabela-conve">
+            <th onclick="ordenarPor('paciente')">Paciente <i class="bi bi-arrow-down-up"></i></th>
+            <th onclick="ordenarPor('procedimento')">Procedimento <i class="bi bi-arrow-down-up"></i></th>
+            <th onclick="ordenarPor('data')">Data <i class="bi bi-arrow-down-up"></i></th>
+            <th onclick="ordenarPor('convenio')">Convênio <i class="bi bi-arrow-down-up"></i></th>
+            <th onclick="ordenarPor('formaPagamento')">Forma Pgto. <i class="bi bi-arrow-down-up"></i></th>
+            <th onclick="ordenarPor('valorLiquido')">Valor Líq. <i class="bi bi-arrow-down-up"></i></th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela">
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+<div class="fundo-modal" id="fundoModal">
+  <div class="modal">
+    <div class="cabecalho-modal">
+      <span class="titulo-modal" id="tituloModal">Nova Fatura</span>
+      <button class="fechar-modal" onclick="fecharModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="grade-formulario">
+      <div class="grupo-campo col-2">
+        <label class="rotulo-campo" for="campoPaciente">Paciente</label>
+        <input type="text" class="campo-formulario" id="campoPaciente" placeholder="Nome completo do paciente" />
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoData">Data do Atendimento</label>
+        <input type="date" class="campo-formulario" id="campoData" />
+      </div>
+      <div class="grupo-campo col-2">
+        <label class="rotulo-campo" for="campoProcedimento">Procedimento</label>
+        <select class="campo-formulario" id="campoProcedimento">
+          <option value="Consulta">Consulta</option>
+          <option value="Retorno">Retorno</option>
+          <option value="Exame Clínico">Exame Clínico</option>
+          <option value="Curativo">Curativo</option>
+          <option value="Cirurgia Ambulatorial">Cirurgia Ambulatorial</option>
+          <option value="Fisioterapia">Fisioterapia</option>
+          <option value="Psicoterapia">Psicoterapia</option>
+          <option value="Odontologia">Odontologia</option>
+          <option value="Vacinação">Vacinação</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoConvenio">Convênio</label>
+        <select class="campo-formulario" id="campoConvenio" onchange="atualizarCalculo()">
+          <option value="Particular">Particular</option>
+          <option value="Unimed">Unimed</option>
+          <option value="Amil">Amil</option>
+          <option value="Bradesco Saúde">Bradesco Saúde</option>
+          <option value="SulAmérica">SulAmérica</option>
+        </select>
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoValorBruto">Valor Bruto (R$)</label>
+        <input type="number" class="campo-formulario" id="campoValorBruto" placeholder="0,00" min="0" step="0.01" oninput="atualizarCalculo()" />
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoDesconto">Cobertura do Convênio (%)</label>
+        <input type="text" class="campo-formulario campo-leitura" id="campoDesconto" readonly placeholder="0%" />
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoValorLiquido">Valor Líquido (R$)</label>
+        <input type="text" class="campo-formulario campo-leitura campo-destaque" id="campoValorLiquido" readonly placeholder="R$ 0,00" />
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoFormaPagamento">Forma de Pagamento</label>
+        <select class="campo-formulario" id="campoFormaPagamento">
+          <option value="Convênio">Convênio</option>
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="Cartão Débito">Cartão - Débito</option>
+          <option value="Cartão Crédito">Cartão - Crédito</option>
+          <option value="PIX">PIX</option>
+        </select>
+      </div>
+      <div class="grupo-campo">
+        <label class="rotulo-campo" for="campoStatus">Status</label>
+        <select class="campo-formulario" id="campoStatus" onchange="toggleDataPagamento()">
+          <option value="Pendente">Pendente</option>
+          <option value="Pago">Pago</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+      <div class="grupo-campo" id="grupDataPagamento" style="display:none;">
+        <label class="rotulo-campo" for="campoDataPagamento">Data do Pagamento</label>
+        <input type="date" class="campo-formulario" id="campoDataPagamento" />
+      </div>
+      <div class="grupo-campo col-3">
+        <label class="rotulo-campo" for="campoObservacao">Observação</label>
+        <textarea class="campo-formulario campo-textarea" id="campoObservacao" placeholder="Observações adicionais" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="acoes-modal">
+      <button class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-primario" onclick="salvarFatura()">
+        <i class="bi bi-check-lg"></i> Salvar Fatura
+      </button>
+    </div>
+  </div>
+</div>
+<div class="fundo-modal" id="fundoDetalhe">
+  <div class="modal largo">
+    <div class="cabecalho-modal">
+      <span class="titulo-modal">Detalhes da Fatura</span>
+      <button class="fechar-modal" onclick="fecharDetalhe()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div id="conteudoDetalhe"></div>
+    <div class="acoes-modal">
+      <button class="btn-secundario" onclick="fecharDetalhe()">Fechar</button>
+      <button class="btn-primario" onclick="imprimirDetalhe()">
+        <i class="bi bi-printer"></i> Imprimir Recibo
+      </button>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
